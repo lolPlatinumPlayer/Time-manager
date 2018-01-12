@@ -7,6 +7,7 @@ import getters from './getters.js';
 
 const state = func.theme_local.get() || {
     dragBarDefaultWidth_dom:111,
+    dragBarDefaultLength:null,
     dragBarWrapWidth:777,
     dragBar:[],
     timeLength:null,
@@ -19,7 +20,8 @@ const state = func.theme_local.get() || {
         allocateTime_total:[],
         trackingTime_total:[]
     },
-    timeStampNow:null
+    timeStampNow:null,
+    lastDragbarTimeLength:null
 }
 
 

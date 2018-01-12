@@ -1,4 +1,6 @@
 
+//该项目所有拖拽条的begin、end属性 都是 该时间段开始与结束时间 距离 开始追踪的时间 的 秒数
+
 import store from '../store/index';
 
 export default {
@@ -9,24 +11,22 @@ export default {
                   leftHandle=$(el).children('.drag-bar__left-handle')[0],
                   bg=$(el).children('.drag-bar__bg')[0],
                   vuexDragbar=store.state.dragBar[binding.value];
-            let minLeft,maxRight,dragbarWidth_bind;
+            let minBegin,maxEnd,dragbarWidth_bind;
             //↓依赖vuex计算拖拽条left最小值和right最大值↙
             //（在新增拖拽条时会依靠这个函数计算出left最小值）
             CalLimitvalue()
 
-
             //第一次新建拖拽条时设置宽度
-            if(vuexDragbar.right===null){
-                dragbarWidth_bind=store.state.dragBarDefaultWidth_dom
+            if(vuexDragbar.end===null){
+                dragbarWidth_bind=store.state.dragBarDefaultLength
             }
             //拖拽条vuex数据都存在时获取宽度
             else{
-                dragbarWidth_bind=vuexDragbar.right-
-                                  vuexDragbar.left
+                dragbarWidth_bind=vuexDragbar.end-
+                                  vuexDragbar.begin
             }
 
-
-            let maxLeft=maxRight-dragbarWidth_bind
+            let maxBegin=maxEnd-dragbarWidth_bind
 
             /*
               下行代码原理：
@@ -34,35 +34,29 @@ export default {
                   在新增拖拽条时括号内值应为null
                   然后在这个函数内就会将dom的left设置为之前计算好的minLeft
             */
-            EntireDragBarPutRight(vuexDragbar.left)
-            vuexDragbar.right=vuexDragbar.left+dragbarWidth_bind
-            //DomLeftRightToMutation()//【】
+            EntireDragBarPutRight(vuexDragbar.begin)
+            vuexDragbar.end=vuexDragbar.begin+dragbarWidth_bind
 
             //-----以上是不点击拖拽条情况下的所有命令------
 
             //点击拖拽条左手柄触发的函数
             leftHandle.onmousedown = function (e) {
                 CalLimitvalue()
-                const vuexWidth=vuexDragbar.right-vuexDragbar.left
-                let oldClientX = e.clientX
-                const disX = e.clientX - el.offsetLeft;
-                const right=vuexDragbar.right
+                const oldClientX = e.clientX;
+                const end=vuexDragbar.end
+                const begin=vuexDragbar.begin
                 document.onmousemove = function (e) {
-                    //e.clientX是鼠标x坐标
-                    //el.offsetLeft是el左边x坐标
-                    //【】对这一系列l等存疑
-                    let l = e.clientX - disX;
-                    let dragWidth = vuexWidth+oldClientX-e.clientX;
-                    if(l<=minLeft){//左侧碰撞暂停、溢出回弹
-                        vuexDragbar.left=minLeft
-                    }else if(l>=right){//右侧碰撞暂停、溢出回弹
-                        vuexDragbar.left=right
+                    let l = (e.clientX - oldClientX )*store.state.timeLength/store.state.dragBarWrapWidth+begin;
+                    if(l<=minBegin){//左侧碰撞暂停、溢出回弹
+                        vuexDragbar.begin=minBegin
+                    }else if(l>=end){//右侧碰撞暂停、溢出回弹
+                        vuexDragbar.begin=end
                     }else {//无碰撞、溢出情况
-                        vuexDragbar.left=l
+                        vuexDragbar.begin=l
                     }
                 }
                 document.onmouseup = function (e) {//用函数封装无效
-                    DomLeftRightToMutation()
+                    MutationBeginEnd()
                     document.onmousemove = null;
                     document.onmouseup = null;
                 };
@@ -71,25 +65,22 @@ export default {
             //点击拖拽条右手柄触发的函数
             rightHandle.onmousedown = function (e) {
                 CalLimitvalue()
-                const styleWidth=parseFloat($(el).css('width'))
-                let oldClientX = e.clientX
-                const maxWidth=maxRight-vuexDragbar.left
-                const right=vuexDragbar.right
+                const oldClientX = e.clientX
+                const end=vuexDragbar.end
                 document.onmousemove = function (e) {
                     //e.clientX是鼠标x坐标
-                    //el.offsetLeft是el左边x坐标
                     //dragWidth是不触及边缘情况下拖拽右侧的拖拽条宽度
-                    let dragRight = right+e.clientX - oldClientX
+                    let dragEnd = end+(e.clientX - oldClientX)*store.state.timeLength/store.state.dragBarWrapWidth
 
-                    if(dragRight>=maxRight){
-                        vuexDragbar.right=maxRight
+                    if(dragEnd>=maxEnd){
+                        vuexDragbar.end=maxEnd
                     }else {
-                        vuexDragbar.right=dragRight
+                        vuexDragbar.end=dragEnd
                     }
 
                 }
                 document.onmouseup = function (e) {
-                    DomLeftRightToMutation()
+                    MutationBeginEnd()
                     document.onmousemove = null;
                     document.onmouseup = null;
                 }
@@ -98,16 +89,17 @@ export default {
             //点击拖拽条中部（主体/背景）手柄触发的函数
             bg.onmousedown = function (e) {
                 CalLimitvalue()
-                const disX = e.clientX - el.offsetLeft;
-                const vuexWidth=vuexDragbar.right-vuexDragbar.left
-                maxLeft=maxRight-vuexWidth
+                const begin=vuexDragbar.begin
+                const oldClientX = e.clientX;
+                const vuexWidth=vuexDragbar.end-vuexDragbar.begin
+                maxBegin=maxEnd-vuexWidth
                 document.onmousemove = function (e) {
-                    let l = e.clientX - disX;
+                    let l = (e.clientX - oldClientX)*store.state.timeLength/store.state.dragBarWrapWidth+begin;
                     EntireDragBarPutRight(l)
-                    vuexDragbar.right=vuexDragbar.left+vuexWidth
+                    vuexDragbar.end=vuexDragbar.begin+vuexWidth
                 };
                 document.onmouseup = function (e) {
-                    DomLeftRightToMutation()
+                    MutationBeginEnd()
                     document.onmousemove = null;
                     document.onmouseup = null;
                 };
@@ -116,41 +108,42 @@ export default {
             //--------------以下是封装的函数--------------
 
 
-            //在抬起鼠标后根据dom获取的left、right来同步vuex中的left、right
-            //因为变量作用域与闭包的规则及vue指令bind的机制，所以如果要把三个事件中这段代码写在一个函数内，只能用dom写
-            function DomLeftRightToMutation(){
-                const left=parseFloat($(el).css('left'))
-                const right=left+parseFloat($(el).css('width'))
-                let payloadLeft={}
-                let payloadRight={}
-                payloadLeft.index=binding.value
-                payloadLeft.attr='left'
-                payloadLeft.value=left
-                payloadRight.index=binding.value
-                payloadRight.attr='right'
-                payloadRight.value=right
-                store.commit('SetDragbarSubkeyAttr',payloadLeft)
-                store.commit('SetDragbarSubkeyAttr',payloadRight)
+            //正式用mutation提交begin、end
+            function MutationBeginEnd(){
+                const begin=vuexDragbar.begin
+                const end=vuexDragbar.end
+                let payloadBegin={}
+                let payloadEnd={}
+                payloadBegin.index=binding.value
+                payloadBegin.attr='begin'
+                payloadBegin.value=begin
+                payloadEnd.index=binding.value
+                payloadEnd.attr='end'
+                payloadEnd.value=end
+                store.commit('SetDragbarSubkeyAttr',payloadBegin)
+                store.commit('SetDragbarSubkeyAttr',payloadEnd)
             }
 
             //计算最小left以及最大right
             function CalLimitvalue() {
-                minLeft=0;maxRight=777;
+                minBegin=0;maxEnd=store.state.timeLength;
 
+                //算出minBegin
                 for (let i=binding.value;i>=0;i--){
                     if(!store.state.dragBar[i-1]){
                         break
                     }else if(store.state.dragBar[i-1].show===true){
-                        minLeft=store.state.dragBar[i-1].right
+                        minBegin=store.state.dragBar[i-1].end
                         break
                     }
                 }
 
+                //算出maxEnd
                 for (let i=binding.value;i<=store.state.dragBar.length-1;i++){
                     if(!store.state.dragBar[i+1]){
                         break
                     }else if(store.state.dragBar[i+1].show===true){
-                        maxRight=store.state.dragBar[i+1].left
+                        maxEnd=store.state.dragBar[i+1].begin
                         break
                     }
                 }
@@ -160,22 +153,22 @@ export default {
             //根据左端点判断拖拽条放入情况
             //并根据判断结果操作拖拽条dom的左端位置
             function EntireDragBarPutRight(l) {
-                vuexDragbar.left=(function(){
+                vuexDragbar.begin=(function(){
                     switch (true){
-                        case minLeft>maxLeft:
-                            alert('没有空间放置该拖拽条,即将进行删除')
+                        case minBegin>maxBegin:
+                            alert('没有空间放置该拖拽条')
                             document.onmousemove = null;
                             vuexDragbar.show=false
                             break
 
                         //新建拖拽条时这个l为null
                         //接下来这个判断语句就会成立
-                        case l<=minLeft:
-                            return minLeft
-                        case minLeft<l&&l<maxLeft:
+                        case l<=minBegin:
+                            return minBegin
+                        case minBegin<l&&l<maxBegin:
                             return l
-                        case maxLeft<=l:
-                            return maxLeft
+                        case maxBegin<=l:
+                            return maxBegin
                         default:
                             console.error('Something go wrong when you put DragBar in. (from fn EntireDragBarPutRight)');
                     }
