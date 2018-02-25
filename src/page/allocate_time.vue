@@ -24,32 +24,48 @@
         <div class="table-wrap">
             <table class="table">
                 <tr>
-                    <td>该段时间名称</td>
-                    <td v-for="(a,index) in dragBar" :key="index" v-if="a.show">
+                    <td>时间段名称</td>
+                    <td v-for="(a,index) in dragBarP1" :key="index">
                         {{a.name}}
                     </td>
                 </tr>
                 <tr>
-                    <td>开始时间</td>
-                    <td v-for="(a,index) in dragBarP1" :key="index" v-if="a.show">
+                    <td>多久后开始</td>
+                    <td v-for="(a,index) in dragBarP1" :key="index">
                         {{a.begin_timeLength}}
                     </td>
                 </tr>
                 <tr>
-                    <td>结束时间</td>
-                    <td v-for="(a,index) in dragBarP1" :key="index" v-if="a.show">
+                    <td>多久后结束</td>
+                    <td v-for="(a,index) in dragBarP1" :key="index">
                         {{a.end_timeLength}}
                     </td>
                 </tr>
                 <tr>
                     <td>时间长度</td>
-                    <td v-for="(a,index) in dragBarP1" :key="index" v-if="a.show&&index!=(dragBarP1.length-1)">
+                    <td v-for="(a,index) in dragBarP1" :key="index" v-if="index!=(dragBarP1.length-1)">
                         {{a.timeLength_dailyFormat}}
                     </td>
-                    <td v-for="(a,index) in dragBarP1" :key="index" v-if="a.show&&index==(dragBarP1.length-1)">
+                    <td v-for="(a,index) in dragBarP1"
+                        :key="index"
+                        v-if="index==(dragBarP1.length-1)">
                         <input type="text"
                                v-model.lazy="lastDragbarTimeLength"
-                               style="font: inherit;background: none;width:100%;">
+                               v-focus
+                               class="u_can_input"
+                               style="font: inherit;background:none;width:100%;">
+                    </td>
+                </tr>
+                <tr>
+                    <td>开始时间</td>
+                    <td v-for="(a,index) in dragBarP1" :key="index">
+                        {{a.trackingDayBegin_clockTime}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>结束时间</td>
+                    <td v-for="(a,index) in dragBarP1" :key="index">
+                        {{a.trackingDayEnd_clockTime}}
                     </td>
                 </tr>
                 <tr class="delet_time">
@@ -63,9 +79,11 @@
             </table>
             <button class="table-wrap-add" @click="addDragBar(),SetLastDragbarTimeLength()">+</button>
         </div>
-        <a @click="$goRoute('/tracking_time'),
+        <a @click="TotalSubmissionAddAllocateTimePage(),
+                   $goRoute('/tracking_time'),
                    SetBeginTrackingTime(),
-                   LetTimeLengthEndAutofit()">
+                   LetTimeLengthEndAutofit(),
+                   StopUpdateBeginTimeEveryS()">
             分配完毕
         </a>
     </div>
@@ -78,16 +96,23 @@
     import Vue from 'vue'
     import VueRouter from "vue-router";
     Vue.use(VueRouter);
-    import {lastDragbarTimeLength_computed} from '../functions.js'
+    import {lastDragbarTimeLength_computed,GetTimeNow_s} from '../functions.js'
 
 
 
     export default {
+        data () {
+            return {
+                //该参数后面用来代表每30秒更新s.beginTrackingTime.timeInOneDay的setInterval
+                updateBeginTimeEveryS:null
+            }
+        },
         computed:{
             ...mapState([
-                'dragBar',//:'strip_getter.dragBar'
+                'dragBar',
                 'timeLength',
-                'dragBarWrapWidth'
+                'dragBarWrapWidth',
+                'totalSubmission'
             ]),
             ...mapGetters([
                 'dragBarP1'
@@ -111,19 +136,43 @@
                 'addDragBar',
                 'deleteDragBar',
                 'InputTimeLength',
-                'SetTimeType',
                 'SetBeginTrackingTime',
                 'LetTimeLengthEndAutofit',
                 'SetLastDragbarTimeLength',
-                'SetDragBarWrapWidth'
-            ])
+                'SetDragBarWrapWidth',
+                'TotalSubmissionAddAllocateTimePage'
+            ]),
+            //停止mounted钩子中的一个setInterval
+            StopUpdateBeginTimeEveryS(){
+                clearInterval(this.updateBeginTimeEveryS)
+            }
         },
         directives: {
-            ...drag_directive
+            ...drag_directive,
+            focus:{
+                inserted:function (el) {
+                    el.focus()
+                }
+            }
         },
         mounted(){
-            this.InputTimeLength()
-            this.SetTimeType(this.$route.query.time_type)
+
+            const wrapThis=this
+
+            this.InputTimeLength();
+
+            //每隔半分钟（非正式）更新一次s.beginTrackingTime.timeInOneDay
+            (function () {
+                wrapThis.$store.state.beginTrackingTime.timeInOneDay=GetTimeNow_s()
+                wrapThis.updateBeginTimeEveryS=setInterval(function () {
+                    const now=new Date(),
+                        seconds=now.getSeconds();
+                    if(seconds==0||seconds==30){
+                        wrapThis.$store.state.beginTrackingTime.timeInOneDay=GetTimeNow_s()
+                    }
+                },1000)
+            }())
+
         }
     }
 
@@ -131,7 +180,6 @@
 
 </script>
 <!-- lang="less"-->
-<style src="../css/allocate_and_tracking_time.less"></style>
 <style>
 
 </style>

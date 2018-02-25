@@ -56,7 +56,7 @@
         left: 50%;
     }
     .drag-bar__bg{
-        width: 200px;
+        /*width: 200px;*/
         background:rgb(85, 143, 208);
         height:10px;
         top:9px;

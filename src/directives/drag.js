@@ -108,8 +108,8 @@ export default {
             //--------------以下是封装的函数--------------
 
 
-            //正式用mutation提交begin、end
             function MutationBeginEnd(){
+                //正式用mutation提交begin、end
                 const begin=vuexDragbar.begin
                 const end=vuexDragbar.end
                 let payloadBegin={}
@@ -122,6 +122,21 @@ export default {
                 payloadEnd.value=end
                 store.commit('SetDragbarSubkeyAttr',payloadBegin)
                 store.commit('SetDragbarSubkeyAttr',payloadEnd)
+                //如果是最后一个dragBar则更新lastDragbarTimeLength
+                if(IfItIsLast()){
+                    store.commit('SetLastDragbarTimeLength')
+                }
+                //判断这个拖拽条是否是最后一个
+                function IfItIsLast() {
+                    for (let i=binding.value;
+                         i<store.state.dragBar.length-1;
+                         i++){
+                        if(store.state.dragBar[i].show=true){
+                            return false
+                        }
+                    }
+                    return true
+                }
             }
 
             //计算最小left以及最大right

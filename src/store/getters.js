@@ -5,49 +5,8 @@
   将秒数转为时间格式，自动适配单位
   第一个参数是秒数，第二个参数是格式种类
 */
-function AutofitTimeFormat(timeStampInput,clockTimeOrTimelength) {
+import {AutofitTimeFormat} from '../functions.js'
 
-    const timeStamp=Math.round(timeStampInput)
-    const day=Math.floor(timeStamp/86400)
-    const hour=Math.floor((timeStamp-day*86400)/3600)
-    const min=Math.floor((timeStamp-day*86400-hour*3600)/60)
-    const s=timeStamp%60
-
-    switch (true){
-        case timeStamp<60:
-            return s+'秒'
-        case 60<=timeStamp&&timeStamp<3600:
-            return min+'分'+s+'秒'
-        case 3600<=timeStamp&&timeStamp<86400:
-            switch (clockTimeOrTimelength){
-                case 'clockTime':
-                    return hour+'点'+min+'分'+s+'秒'
-                case 'timeLength':
-                    return hour+'时'+min+'分'+s+'秒'
-                default:
-                    console.error('neither "time" nor "timeLength"')
-            }
-        case 86400<=timeStamp:
-            switch (clockTimeOrTimelength){
-                case 'clockTime':
-                    switch (day){
-                        case 1:
-                            return '明天'+hour+'点'+min+'分'+s+'秒'
-                        case 2:
-                            return '后天'+hour+'点'+min+'分'+s+'秒'
-                        default:
-                            console.error('num of day can not more than 2')
-                    }
-                case 'timeLength':
-                    return day+'天'+hour+'时'+min+'分'+s+'秒'
-                default:
-                    console.error('neither "time" nor "timeLength"')
-            }
-        default:
-            console.error('this fn wrong')
-    }
-
-}
 export default {
     //dragBarP1是基于
     dragBarP1(s){
