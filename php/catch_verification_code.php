@@ -21,8 +21,8 @@ date_default_timezone_set("Asia/Shanghai");
 
 //连接数据库需要的各种信息
 $db_server = 'localhost';
-$db_username = 'fkqqnptb_root';
-$db_password = '1122=33';
+$db_username = 'root';
+$db_password = 'root';
 $db_type='mysql';
 $db_name='fkqqnptb_small_blog'; 
 $db_tsn="$db_type:host=$db_server;dbname=$db_name;charset=utf8";
@@ -64,7 +64,7 @@ if(!preg_match("/^1[0-9]{10}$/",$receive_phone)){
 //这里正则中文不知道为什么成功了，来源网址https://zhidao.baidu.com/question/344567958.html
 //其他地方的方法怎么都无法匹配中文
 else if(!preg_match("/^[\x80-\xffA-Za-z0-9_]{1,14}$/",$receive_username)){
-	$echo['msg']='用户名格式不符合要求。（用户名格式要求为：长度在14位字符串以内，只能包含中文英文数字下划线）';
+	$echo['msg']='用户名格式不符合要求。（用户名格式要求为：长度在14位字符以内，只能包含中文英文数字下划线）';
 }
 
 //检测密码是否符合要求
@@ -119,53 +119,6 @@ echo json_encode($echo);
 //命令短信服务商发送验证码，并将该验证码相关信息放入数据表
 function send_and_save_verification_code(){
 	global $verification_code,$receive_phone,$receive_username,$receive_password,$conn,$echo;
-	
-	//------------------以下为命令短信商服务器发送短信代码-------------------
-	require 'submail_php_sdk_master/app_config.php'; 
-    require_once('submail_php_sdk_master/SUBMAILAutoload.php');
-       
-    $submail=new MESSAGEXsend($message_configs);
-    
-    /*
-     |必选参数
-     |--------------------------------------------------------
-     |设置短信接收的11位手机号码
-     |--------------------------------------------------------
-     */    
-    $submail->setTo($receive_phone);
-    
-    /*
-     |必选参数
-     |--------------------------------------------------------
-     |设置短信模板ID
-     |--------------------------------------------------------
-     */    
-    $submail->SetProject('Q4Daw3');
-    
-    /*
-     |可选参数
-     |--------------------------------------------------------
-     |添加文本变量
-     |可多次调用
-     |--------------------------------------------------------
-     */   
-    $submail->AddVar('code',$verification_code);
-    $submail->AddVar('use','注册帐号');
-    
-    /*
-     |调用 xsend 方法发送短信
-     |--------------------------------------------------------
-     */    
-    $xsend=$submail->xsend();
-    
-    
-    /*
-     |打印服务器返回值
-     |--------------------------------------------------------
-     */
-    $echo['log']=$echo['log'].' 短信商服务器返回内容: '.$xsend;
-    //print_r($xsend);
-	//------------------以上为命令短信商服务器发送短信代码-------------------
 	//------------------以下为将该验证码相关信息放入数据表-------------------
 		
 	//增
@@ -182,7 +135,7 @@ function send_and_save_verification_code(){
 }
 
 //比较数据表中指定行的 “提交时间”数据 与现在的时间
-//如果现在时间比提交时间大得超过120秒则返回true
+//如果现在时间比提交时间大得超过30秒则返回true
 //反之返回false
 function IfSubmittimeTooEarly(){
 	global $submit_time_of_verification_code,$echo;
@@ -190,7 +143,7 @@ function IfSubmittimeTooEarly(){
 	$now_time=date("Y-m-d h:i:sa");
 	$db_time_s=strtotime($db_time);
 	$now_time_s=strtotime($now_time);
-	if($now_time_s>$db_time_s+120){//测试用30秒。项目用120
+	if($now_time_s>$db_time_s+30){//测试用30秒。项目用120
 		return true;
 	}else{
 		return false;
@@ -219,6 +172,7 @@ function HaveSameUsernameOrPhone(){
 
 //检测密码格式是否符合要求
 function IsPasswordFormatRight($password){
+	//要求：6位至14位字母数字组合，区分大小写
 	//要求：6至14位、只能由字母和数字组成
 	if(preg_match("/^[a-zA-Z0-9]{6,14}$/",$password)&&
 	//要求：6至14位、不能全是数字
