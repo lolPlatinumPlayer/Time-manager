@@ -11,3 +11,4 @@ a img{border:none;}/*去掉ie和360的默认蓝边*/
 .horizontal/*水平镜像*/{-moz-transform:scaleX(-1);-webkit-transform:scaleX(-1);-o-transform:scaleX(-1);transform:scaleX(-1);/*filter:fliph;IE(9不可用)*/-ms-transform:scaleX(-1);/*IE9*/}
 .textarea{ font-size:0.875rem; text-align:justify; text-indent:2em; line-height:1.625rem; margin-bottom:0.8rem;}
 i{font-style:normal;}
+.float-left{float:left}.float-right{float:right!important;}

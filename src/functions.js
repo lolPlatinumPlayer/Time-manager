@@ -94,8 +94,8 @@ const lastDragbarTimeLength_computed=
                 payloadEnd.value = end
                 setterThis.$store.commit('SetDragbarSubkeyAttr', payloadEnd)
                 setterThis.$store.commit('SetLastDragbarTimeLength')
-                //去除u_can_input的提示样式
-                $('.u_can_input').removeClass('u_can_input')
+                //去除table__input__can的提示样式
+                $('.table__input__can').removeClass('table__input__can')
             }
         }
 

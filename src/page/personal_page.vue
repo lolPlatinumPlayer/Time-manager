@@ -1,11 +1,12 @@
 <template>
     <div>
+        <div class="jianju"></div>
+        <h2>个人页面</h2>
+        <h3>您的时间记录如下</h3>
         <label>
             是否显示原计划时间
             <input v-model="showPlanedTime" type="checkbox"/>
         </label>
-        <h2>个人页面</h2>
-        <h3>您的时间记录如下</h3>
         <div v-for="each_time_record in personal_total_time_record"
              style="margin:30px auto">
             <!--日期-->
@@ -41,7 +42,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>时间长度</td>
+                        <td>持续时长</td>
                         <td v-for="(a,index) in each_time_record.actual_time"
                             :key="index"
                             :class="a.status==='进行中'||
@@ -80,7 +81,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>时间长度</td>
+                        <td>持续时长</td>
                         <td v-for="(a,index) in each_time_record.planned_time"
                             :key="index"
                             :class="a.status==='进行中'||

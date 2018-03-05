@@ -1,10 +1,14 @@
 <template>
     <div id="box">
-        <div style="float:left">
+        <div class="ap"
+             style="right:21px;top:121px;">
             总时间条宽度：
-            <input type="number" v-model="dragBarWrapWidth">
+            <el-input-number :step="10"
+                             v-model="dragBarWrapWidth">
+            </el-input-number>
         </div>
-        <p class="title" style=" width: 100%;display: table;">
+        <div class="jianju" style="height:75px"></div>
+        <p class="title">
             分配时间
         </p>
         <div class="drag-bar__" :style="{width:dragBarWrapWidth+'px'}">
@@ -42,7 +46,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>时间长度</td>
+                    <td>持续时长</td>
                     <td v-for="(a,index) in dragBarP1" :key="index" v-if="index!=(dragBarP1.length-1)">
                         {{a.timeLength_dailyFormat}}
                     </td>
@@ -52,7 +56,7 @@
                         <input type="text"
                                v-model.lazy="lastDragbarTimeLength"
                                v-focus
-                               class="u_can_input"
+                               class="table__input__can"
                                style="font: inherit;background:none;width:100%;">
                     </td>
                 </tr>
@@ -69,7 +73,7 @@
                     </td>
                 </tr>
                 <tr class="delet_time">
-                    <td>删除时间</td>
+                    <td>删除</td>
                     <td v-for="(a,index) in dragBar"
                         :key="index" v-if="a.show"
                         @click="deleteDragBar(index)">
@@ -77,15 +81,20 @@
                     </td>
                 </tr>
             </table>
-            <button class="table-wrap-add" @click="addDragBar(),SetLastDragbarTimeLength()">+</button>
         </div>
-        <a @click="TotalSubmissionAddAllocateTimePage(),
-                   $goRoute('/tracking_time'),
-                   SetBeginTrackingTime(),
-                   LetTimeLengthEndAutofit(),
-                   StopUpdateBeginTimeEveryS()">
+        <el-button plain
+                   @click="AddDragBar()">
+            添加时间块
+        </el-button>
+        <el-button plain
+                   style="margin-top:22px;"
+                   @click="TotalSubmissionAddAllocateTimePage(),
+                           $goRoute('/tracking_time'),
+                           SetBeginTrackingTime(),
+                           LetTimeLengthEndAutofit(),
+                           StopUpdateBeginTimeEveryS()">
             分配完毕
-        </a>
+        </el-button>
     </div>
 </template>
 
@@ -133,18 +142,19 @@
         },
         methods:{
             ...mapMutations([
-                'addDragBar',
                 'deleteDragBar',
                 'InputTimeLength',
                 'SetBeginTrackingTime',
                 'LetTimeLengthEndAutofit',
-                'SetLastDragbarTimeLength',
                 'SetDragBarWrapWidth',
                 'TotalSubmissionAddAllocateTimePage'
             ]),
             //停止mounted钩子中的一个setInterval
             StopUpdateBeginTimeEveryS(){
                 clearInterval(this.updateBeginTimeEveryS)
+            },
+            AddDragBar(){
+                this.$store.commit('AddDragBar',this);
             }
         },
         directives: {
@@ -159,7 +169,7 @@
 
             const wrapThis=this
 
-            this.InputTimeLength();
+            this.InputTimeLength(wrapThis);
 
             //每隔半分钟（非正式）更新一次s.beginTrackingTime.timeInOneDay
             (function () {

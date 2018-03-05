@@ -4,7 +4,7 @@
             总时间条宽度：
             <input type="number" v-model="dragBarWrapWidth">
         </div>
-        <p class="title" style=" width: 100%;display: table;">
+        <p class="title">
             追踪时间
         </p>
         <div class="drag-bar__" :style="{width:dragBarWrapWidth+'px'}">
@@ -56,7 +56,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>时间长度</td>
+                    <td>持续时长</td>
                     <td v-for="(a,index) in dragBarP1"
                         :key="index"
                         :class="a.status==='进行中'||
@@ -96,10 +96,11 @@
                 </tr>
             </table>
         </div>
-        <button class="button button-primary special-button-blue"
-                @click="Stop(timeNow.timeInOneDay)">
+        <el-button plain
+                   style="margin-top:22px;"
+                   @click="Stop(timeNow.timeInOneDay)">
             {{stopButtonValue.ifStop?stopButtonValue.true:stopButtonValue.false}}
-        </button>
+        </el-button>
     </div>
 </template>
 
@@ -170,7 +171,7 @@
             const wrapThis=this
 
             this.loop_trackingTimePage=setInterval(function () {
-                console.log(11);
+                console.log('loop_trackingTimePage正在运行');
                 //把timeNow.timeInOneDay设置为 从今天零点到现在过了的秒数
                 wrapThis.timeNow.timeInOneDay=GetTimeNow_s()
 

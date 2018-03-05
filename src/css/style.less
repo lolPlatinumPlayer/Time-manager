@@ -1,0 +1,200 @@
+
+
+//通用（但不确定是否应该加进common.css里）
+.title-common-style{
+    text-align: center;
+    color: #585858;
+    font-weight: bold;
+    width: 100%;
+    display: table;
+    letter-spacing:0.1em;
+}
+.title{
+    font-size: 32px;
+    //margin-top: 160px;
+    .title-common-style;
+}
+.h0{
+    font-size:2.5em;
+    .title-common-style;
+}
+.h1{
+    font-size:2em;
+    .title-common-style;
+}
+.h2{
+    font-size:1.5em;
+    .title-common-style;
+}
+.h3{
+    font-size: 1.17em;
+    .title-common-style;
+}
+.h4{
+    .title-common-style;
+}
+.h5{
+    font-size: 0.875em;
+    font-weight:normal;
+    .title-common-style;
+}
+.h6{
+    font-size: 0.75em;
+    font-weight:normal;
+    .title-common-style;
+}
+.auto-height{
+    height:1000px;
+    @media (max-height: 500px){
+        height:300px;
+    }
+}
+
+
+
+
+//覆盖通用样式
+.jianju{
+    height:86px;
+}
+
+
+
+
+//覆盖element样式
+.el-menu-item{
+    padding:0;
+    a{
+        padding:0 20px;
+        height:inherit;
+        display: block;
+        text-decoration:none;
+    }
+}
+
+
+
+
+//拖拽条
+.drag-bar__{
+    margin:41px auto 12px;
+    width: 780px;
+    height: 28px;
+    position: relative;
+}
+.drag-bar__wrap-bg{
+    width:100%;
+    background-color:white;
+    height:10px;
+    top:7px;
+    position:absolute;
+    border-radius:6px;
+    border:2px #bfbfbf solid;
+}
+
+
+
+
+//表格
+.table-wrap{position:relative;margin:auto; display: table;}
+.table{text-align:center;margin:auto}
+.table tr:nth-child(1) td{background:rgb(214, 231, 251)}
+.table tr.delet_time td:not(:nth-child(1)):hover{background:rgb(251, 31, 18);color:white;cursor:pointer}
+.table td:nth-child(1){background:rgb(214, 231, 251)}
+.table td {width:111px;}
+.table td:nth-child(2n) {background:rgba(180, 176, 177, 0.2) }
+.table tr:nth-child(2n) {background:rgba(180, 176, 177, 0.2) }
+.table td.td_ongoing/*时间段正在进行的样式*/ {background:rgba(247, 247, 194, 0.45)}
+.table__input__can{background:rgba(251, 247, 191, 0.71) !important; }
+
+
+
+
+//logo+网站名
+.logo-and-name__{
+    height:46px;
+    width:310px;
+    position:relative;
+    &logo{
+        position:absolute;
+        left:0;
+        height:46px;
+        width:46px;
+        background:url("../assets/img/logo_46px_darkbg.png");
+    }
+    &name{
+        position:absolute;
+        left:70px;
+        line-height:46px;
+        font-size:28px;
+        letter-spacing:11px;
+    }
+}
+
+
+.el-carousel__container{
+    height:777px;
+}
+
+
+//导航条
+@nav_height:104px;
+@nav_lar_margin:96px;
+.nav__{
+    height:@nav_height;
+    border:none;
+    overflow:hidden;
+    & .el-menu-item{
+        font-size:16px;
+        letter-spacing:8px;
+        text-indent:8px;
+        &:hover{
+            background:none!important;
+        }
+    }
+    &__transparent{
+        background:none;
+        & .el-menu-item,.logo-and-name__name{
+            color:white!important;
+        }
+    }
+    &__whitebg{
+        background-color:white;
+        box-shadow:0 -9px 21px black;
+        & .el-menu-item,.logo-and-name__name{
+            color:black!important;
+        }
+        .logo-and-name__logo{
+            background:url("../assets/img/logo_46px_lightbg.png");
+        }
+    }
+    &__opaque{
+        background:white;
+        & .el-menu-item,.logo-and-name__name{
+            color:black!important;
+        }
+    }
+    & .logo-and-name__{
+        top:29px;
+        margin-left:@nav_lar_margin;
+        margin-right:67px;
+    }
+    & .el-menu-item{
+        height:@nav_height;
+        line-height:@nav_height;
+    }
+    &right-margin-block{
+        float:right;
+        width:@nav_lar_margin;
+        height:1px;
+    }
+}
+
+
+
+
+
+
+
+
+

@@ -31,7 +31,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>时间长度</td>
+                    <td>持续时长</td>
                     <td v-for="(a,index) in totalSubmission.trackingTime_total"
                         :key="index"
                         :class="a.status==='进行中'||
