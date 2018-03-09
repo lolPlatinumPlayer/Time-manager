@@ -1,8 +1,9 @@
 var path = require('path')
 var webpack = require('webpack')
+var autoprefixer = require('autoprefixer');
 
 module.exports = {
-    entry: './src/main.js',
+    entry: ['babel-polyfill','./src/main.js'],
     output: {
         path: path.resolve(__dirname, './dist'),
         publicPath: '/dist/',
@@ -25,11 +26,11 @@ module.exports = {
             },
             {
                 test: /\.less$/,
-                loader: "style-loader!css-loader!less-loader",
+                use: ["style-loader", "css-loader","less-loader", "postcss-loader"]
             },
             {
                 test: /\.css$/,
-                loader: 'style-loader!css-loader'
+                use: ["style-loader", "css-loader", "postcss-loader"]
             },
             {
                 test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
