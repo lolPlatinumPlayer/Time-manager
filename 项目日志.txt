@@ -15,10 +15,20 @@ npm run build
  
 
 
-1. 导航条过短应改变
+
+
+
 1. 导航条有几率出现BUG:在非首页页面触发了首页页面的效果
 1. 路由动效
+   未记录笔记
+1. 1:1:1会变成1分1秒【已解决】
 1. 输入取值改变
+1. 报错：Cannot read property 'dragBarP1' of undefined
+   来源： functions.js -> lastDragbarTimeLength_computed -> set -> “输入的是中文时分秒格式”的else分支（另一个分支估计也会触发） -> SubmitLastDragbarTimeLength() -> SetLastDragbarTimeLength
+   dev-tools上确实dragBarP1在添加时间块后不会加上最后一项（不过会加上倒数第二项）
+   报错情况：
+       1. 用键入数值方式修改最后一个拖拽条长度时
+       1. 拖拽最后一个时间块也会报这个错
 
 
 
@@ -210,6 +220,8 @@ npm run build
     功能从获取dragbarP1的下一个元素变成获取dragbarP1中的任意元素
 16、BUG：延时完成状态下 还未到结束时间时，点击完成和暂停都会有BUG
 17、突发事件暂停不应该有操作按钮
+18. 导航条去掉element重写
+    （因为element的过渡效果不知道怎么关）
 
 
 
