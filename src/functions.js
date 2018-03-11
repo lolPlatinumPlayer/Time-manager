@@ -15,10 +15,13 @@ const lastDragbarTimeLength_computed=
         //输入的是（中文或英文）冒号格式的
         if (value.indexOf(":") >= 1 || value.indexOf("：") >= 1) {
             value.indexOf(":") >= 1 ? timeArr = value.split(":") : timeArr = value.split("：")
-            if (timeArr.length = 2) {
+            console.log(timeArr);
+            if (timeArr.length == 2) {
                 lastDragbarTimeLength = parseInt(timeArr[0]) * 60 + parseInt(timeArr[1])
-            } else if (timeArr.length = 3) {
+                console.log('两段：',timeArr);
+            } else if (timeArr.length == 3) {
                 lastDragbarTimeLength = parseInt(timeArr[0]) * 3600 + parseInt(timeArr[1] * 60) + parseInt(timeArr[2])
+                console.log('三段：',timeArr);
             } else {
                 alert('“:”只允许输入一个或者两个（请检查最后一个时间段的“结束时间”格式是否正确）')
             }

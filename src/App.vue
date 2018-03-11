@@ -1,9 +1,11 @@
 <template>
     <div>
-        <div style="top:0;position:fixed;width:100%;z-index:999;">
-            <el-menu mode="horizontal"
+        <div id="nav"
+             style="top:0;position:fixed;width:100%;z-index:999;">
+            <el-menu v-if="windowWidth>600" mode="horizontal"
                      class="nav__"
-                     :class="should_navbg_transparent?'nav____transparent':'nav____whitebg'">
+                     :class="should_navbg_transparent?'nav____transparent':'nav____whitebg'"
+                     >
                 <div class="float-left logo-and-name__">
                     <i class="float-left logo-and-name__logo">
                     </i>
@@ -31,7 +33,6 @@
                         教程
                     </router-link>
                 </el-menu-item>
-                <div class="nav__right-margin-block"></div>
                 <template v-if='isLogin'>
                     <el-menu-item index="5"
                                   class="float-right">
@@ -63,10 +64,86 @@
                 </template>
             </el-menu>
         </div>
+        <!--手机版nav-->
+        <el-row  v-if="windowWidth<=600" class="tac">
+            <el-col :span="24">
+                <el-menu
+                        default-active="1"
+                        class="el-menu-vertical-demo"
+                        background-color="#545c64"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <div class="logo-and-name__" style="margin:11px auto">
+                        <i class="float-left logo-and-name__logo">
+                        </i>
+                        <span class="float-left logo-and-name__name"
+                              style="color:white;">
+                                时间规划助手
+                            </span>
+                    </div>
+                    <el-menu-item index="1">
+                        <router-link to="/">
+                            主页
+                        </router-link>
+                    </el-menu-item>
+                    <el-menu-item index="2">
+                        <router-link to="/allocate_time">
+                            分配时间
+                        </router-link>
+                    </el-menu-item>
+                    <el-menu-item index="3">
+                        <router-link to="/get_money">
+                            领红包
+                        </router-link>
+                    </el-menu-item>
+                    <el-menu-item index="4">
+                        <router-link to="/guide">
+                            教程
+                        </router-link>
+                    </el-menu-item>
+                    <template v-if='isLogin'>
+                        <el-menu-item index="5">
+                            <a @click="Logout">
+                                登出
+                            </a>
+                        </el-menu-item>
+                        <el-menu-item index="6">
+                            <router-link to="/personal_page"
+                                         style="max-width:111px;overflow:hidden;letter-spacing:normal;">
+                                {{username}}
+                            </router-link>
+                        </el-menu-item>
+                    </template>
+                    <template v-else>
+                        <el-menu-item index="5">
+                            <router-link to="/register_account">
+                                注册
+                            </router-link>
+                        </el-menu-item>
+                        <el-menu-item index="6">
+                            <router-link to="/login">
+                                登录
+                            </router-link>
+                        </el-menu-item>
+                    </template>
+                </el-menu>
+            </el-col>
+        </el-row>
         <div v-if="nav_auto_fill"
-             style="height:104px;">
+             :style="{height:navHeight+'px'}">
         </div>
-        <router-view></router-view>
+        <transition
+                name="custom-classes-transition"
+                :enter-active-class="transitionClass.enter[transitionName]"
+                :leave-active-class="transitionClass.leave[transitionName]"
+
+
+        >
+            <router-view
+                    style="position:absolute;
+                           width:100%"
+            ></router-view>
+        </transition>
     </div>
 </template>
 
@@ -86,15 +163,15 @@
 
 
     const routes = [
-        { path: '/', component: home ,meta: { requiresId: 1 }},
-        { path: '/allocate_time', component: allocate_time ,meta: { requiresId: 1 }},
-        { path: '/tracking_time', component: tracking_time ,meta: { requiresId: 1 }},
-        { path: '/finish_tracking', component: finish_tracking ,meta: { requiresId: 1 }},
-        { path: '/get_money', component: get_money ,meta: { requiresId: 1 }},
-        { path: '/guide', component: guide ,meta: { requiresId: 1 }},
-        { path: '/register_account', component: register_account ,meta: { requiresId: 1 }},
-        { path: '/login', component: login ,meta: { requiresId: 1 }},
-        { path: '/personal_page', component: personal_page ,meta: { requiresId: 1 }}
+        { path: '/', component: home ,meta: { pageIndex: 1 }},
+        { path: '/allocate_time', component: allocate_time ,meta: { pageIndex: 2 }},
+        { path: '/tracking_time', component: tracking_time ,meta: { pageIndex: 3 }},
+        { path: '/finish_tracking', component: finish_tracking ,meta: { pageIndex: 4 }},
+        { path: '/get_money', component: get_money ,meta: { pageIndex: 5 }},
+        { path: '/guide', component: guide ,meta: { pageIndex: 6 }},
+        { path: '/register_account', component: register_account ,meta: { pageIndex: 8 }},
+        { path: '/login', component: login ,meta: { pageIndex: 7 }},
+        { path: '/personal_page', component: personal_page ,meta: { pageIndex: 8 }}
     ]
 
     const router = new VueRouter({
@@ -109,7 +186,22 @@
             return{
                 should_navbg_transparent:true,
                 nav_auto_fill:false,
-                first_loop_about_nav:null
+                first_loop_about_nav:null,
+                windowWidth:document.body.clientWidth,
+                navHeight:104,
+                transitionName:null,
+                transitionClass:{
+                    enter:{
+                        goLeft:'animated fadeInRight',
+                        goRight:'animated fadeInLeft',
+                        fade:'animated fadeIn'
+                    },
+                    leave:{
+                        goLeft:'animated fadeOutLeft',
+                        goRight:'animated fadeOutRight',
+                        fade:'animated fadeOut'
+                    }
+                }
             }
         },
         computed:{
@@ -155,6 +247,18 @@
                     wrapThis.should_navbg_transparent=false
                     wrapThis.nav_auto_fill=true
                 }
+            },
+            '$route' (to, from) {
+                const toIndex = to.meta.pageIndex
+                const fromIndex = from.meta.pageIndex
+                this.transitionName = (()=>{
+                    if(toIndex < fromIndex )
+                        return 'goRight'
+                    else if(toIndex > fromIndex)
+                        return 'goLeft'
+                    else
+                        return 'fade'
+                })()
             }
         },
         mounted(){
@@ -187,14 +291,26 @@
                     wrapThis.should_navbg_transparent=false:
                     wrapThis.should_navbg_transparent=true
             },1000)
+            //给navHeight赋初始值
+            wrapThis.navHeight=$('#nav').height()
+            //每次窗口宽度变化都更新一些数据
+            window.onresize = () => {
+                return (() => {
+                    //更新data子项————windowWidth
+                    window.screenWidth = document.body.clientWidth
+                    wrapThis.windowWidth = window.screenWidth
+                    //修改代替nav高度的div的高度
+                    wrapThis.navHeight=$('#nav').height()
+                })()
+            }
         }
     }
 
 
 </script>
 
-<style src="./css/buttons.css"></style>
 <style src="./css/common.css"></style>
 <style src="./css/style.less" lang="less"></style>
-<style lang="less" scoped>
+<style src="./css/animate.css"></style>
+<style>
 </style>

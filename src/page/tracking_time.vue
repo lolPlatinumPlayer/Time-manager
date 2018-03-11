@@ -1,9 +1,13 @@
 <template>
     <div id="box">
-        <div style="float:left">
+        <div class="ap"
+             style="right:21px;top:21px;">
             总时间条宽度：
-            <input type="number" v-model="dragBarWrapWidth">
+            <el-input-number :step="10"
+                             v-model="dragBarWrapWidth">
+            </el-input-number>
         </div>
+        <div class="jianju" style="height:75px"></div>
         <p class="title">
             追踪时间
         </p>
@@ -80,18 +84,22 @@
                         :key="index"
                         :class="a.status==='进行中'||
                         a.status==='延迟完成'?'td_ongoing':null" >
-                        <div class="button-group" style="width:139px;">
-                            <button class="button"
-                                    @click="FinishTimeSlot(index)"
-                                    v-if="a.status!=='完成'">
+                        <el-button-group style="width:136px;">
+                            <el-button plain
+                                       type="info"
+                                       class="control-button"
+                                       @click="FinishTimeSlot(index)"
+                                       v-if="a.status!=='完成'">
                                 完成
-                            </button>
-                            <button class="button"
-                                    @click="DelayEnd(index)"
-                                    v-if="a.status!=='完成'">
+                            </el-button>
+                            <el-button plain
+                                       type="info"
+                                       class="control-button"
+                                       @click="DelayEnd(index)"
+                                       v-if="a.status!=='完成'">
                                 {{a.status==='延迟完成'?'取消延迟':'延迟完成'}}
-                            </button>
-                        </div>
+                            </el-button>
+                        </el-button-group>
                     </td>
                 </tr>
             </table>

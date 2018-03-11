@@ -1,15 +1,14 @@
 <template>
     <div>
-        <div style="width:1000px">
-            <p id="buttom" 
-               style="font-weight:bold;font-size:25px;margin-top:30px">
+        <div class="fast-build-page">
+            <div class="jianju" style="height:75px"></div>
+            <p class="h1"
+               style="text-indent: 69px;text-align: center;margin:0 auto;">
                 红包活动详情
             </p>
+            <div class="jianju" style="height:14px"></div>
             <p>
-                网站试用员：30-60元/1次
-            </p>
-            <p>
-                轻松程度：非常轻松、随处可做、没有负担
+                红包金额：30-60元
             </p>
             <p>
                 人员要求：属于以下人员之一：自学者、创业者、自由职业者、需要自我监督的人
@@ -29,17 +28,6 @@
     export default {}
 </script>
 
-<style scoped>
-    p{
-        text-align:left;
-        margin:21px auto;
-    }
-    p:hover{
-        background:rgba(218, 253, 251, 0.6);
-    }
-    img{
-        display:block;
-        margin-left: 0;
-        border:2px gainsboro solid;
-    }
+<style>
+
 </style>

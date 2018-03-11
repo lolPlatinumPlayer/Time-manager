@@ -1,9 +1,12 @@
 <template>
     <div>
-        <div style="width:1000px">
-            <p style="font-weight:bold;font-size:25px;margin-top:30px">
+        <div class="fast-build-page">
+            <div class="jianju" style="height:75px"></div>
+            <p class="h1"
+               style="text-indent: 69px;text-align: center;margin:0 auto;">
                 教程
             </p>
+            <div class="jianju" style="height:14px"></div>
             <p>
                 浏览器：目前只做了谷歌浏览器的兼容
             </p>
@@ -71,17 +74,5 @@
     export default {}
 </script>
 
-<style scoped>
-    p{
-        text-align:left;
-        margin:21px auto;
-    }
-    p:hover{
-        background:rgba(218, 253, 251, 0.6);
-    }
-    img{
-        display:block;
-        margin-left: 0;
-        border:2px gainsboro solid;
-    }
+<style>
 </style>

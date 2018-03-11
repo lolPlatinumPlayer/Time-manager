@@ -4,6 +4,7 @@ import Vue from 'vue'
 
 //获取以秒为单位的当前时间
 import {GetTimeNow_s} from '../functions.js'
+import {AutofitTimeFormat} from '../functions.js'
 //输入getters及timeSlotId返回带有这个timeSlotId的dragbarP1的序号
 import {GetDragbarGetterIndex} from '../functions.js'
 
@@ -128,6 +129,7 @@ export default {
         p.$prompt('以小时为单位，只能是数字，可以有小数', '输入希望分配的总时长', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
+            customClass:'customClass',
             inputValidator:(content)=>VerifyFormat(content)
         }).then(({value}) => SetTimeslotDefaultLengt(value)
         ).catch(() => {
@@ -156,8 +158,11 @@ export default {
     AddDragBar(s,p){
         p.$prompt('定义时间块名称', {
             confirmButtonText: '确认',
-            cancelButtonText: '取消添加'
+            cancelButtonText: '取消添加',
+            customClass:'customClass'
         }).then(({value}) => {
+            //设置s.lastDragbarTimeLength
+            s.lastDragbarTimeLength=AutofitTimeFormat(s.dragBarDefaultLength)
             //增加时间块
             s.dragBar=[...s.dragBar,{
                 show:true,
@@ -169,10 +174,8 @@ export default {
                 status:'未完成',
                 timeSlotId:s.dragBar.length
             }]
-            //设置s.lastDragbarTimeLength
-            SetLastDragbarTimeLength(s)
         }).catch(() => {
-            console.log('s:',s)
+            console.log('代码判断：用户在添加时间条的弹窗上点了“取消”按钮')
         });
         /*
         if(name!==null){

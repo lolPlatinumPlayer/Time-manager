@@ -1,7 +1,7 @@
 <template>
     <div id="box">
         <div class="ap"
-             style="right:21px;top:121px;">
+             style="right:21px;top:21px;">
             总时间条宽度：
             <el-input-number :step="10"
                              v-model="dragBarWrapWidth">
@@ -54,7 +54,7 @@
                         :key="index"
                         v-if="index==(dragBarP1.length-1)">
                         <input type="text"
-                               v-model.lazy="lastDragbarTimeLength"
+                               v-model.lazy="lastDragbarTimeLength_computed"
                                v-focus
                                class="table__input__can"
                                style="font: inherit;background:none;width:100%;">
@@ -126,7 +126,7 @@
             ...mapGetters([
                 'dragBarP1'
             ]),
-            lastDragbarTimeLength:lastDragbarTimeLength_computed,
+            lastDragbarTimeLength_computed,
             //与mapState中的dragBarWrapWidth同名，不知道会不会有问题
             dragBarWrapWidth:{
                 get() {

@@ -1,7 +1,11 @@
 <template>
     <div id="box">
-        <h2>追踪完成</h2>
+        <div class="jianju" style="height:75px"></div>
+        <p class="title">
+            追踪完成
+        </p>
         <p v-if="!isLogin">登录帐号即可将记录保存到云端</p>
+        <div class="jianju" style="height:35px"></div>
         <h3>本次实际完成时间信息如下</h3>
         <!--下个标签是显示【实际时间】的表格-->
         <div class="table-wrap">
