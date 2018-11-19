@@ -29,25 +29,31 @@
             <table class="table">
                 <tr>
                     <td>时间段名称</td>
-                    <td v-for="(a,index) in dragBarP1" :key="index">
+                    <td v-for="(a,index) in dragBarP1"
+                        :key="index">
                         {{a.name}}
                     </td>
                 </tr>
                 <tr>
                     <td>多久后开始</td>
-                    <td v-for="(a,index) in dragBarP1" :key="index">
+                    <td v-for="(a,index) in dragBarP1"
+                        :key="index">
                         {{a.begin_timeLength}}
                     </td>
                 </tr>
                 <tr>
                     <td>多久后结束</td>
-                    <td v-for="(a,index) in dragBarP1" :key="index">
+                    <td v-for="(a,index) in dragBarP1"
+                        style="white-space:nowrap;padding:0 .7em;"
+                        :key="index">
                         {{a.end_timeLength}}
                     </td>
                 </tr>
                 <tr>
                     <td>持续时长</td>
-                    <td v-for="(a,index) in dragBarP1" :key="index" v-if="index!=(dragBarP1.length-1)">
+                    <td v-for="(a,index) in dragBarP1"
+                        :key="index"
+                        v-if="index!=(dragBarP1.length-1)">
                         {{a.timeLength_dailyFormat}}
                     </td>
                     <td v-for="(a,index) in dragBarP1"
@@ -154,7 +160,7 @@
                 clearInterval(this.updateBeginTimeEveryS)
             },
             AddDragBar(){
-                this.$store.commit('AddDragBar',this);
+                this.$store.dispatch('AddDragBar',this);
             }
         },
         directives: {

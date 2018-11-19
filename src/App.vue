@@ -6,7 +6,10 @@
                      class="nav__"
                      :class="should_navbg_transparent?'nav____transparent':'nav____whitebg'"
                      >
-                <div class="float-left logo-and-name__">
+                <div class="float-left
+                            logo-and-name__"
+                     style="cursor:pointer;"
+                     @click="$goRoute('/')">
                     <i class="float-left logo-and-name__logo">
                     </i>
                     <span class="float-left logo-and-name__name">
@@ -23,11 +26,11 @@
                         分配时间
                     </router-link>
                 </el-menu-item>
-                <el-menu-item index="3">
+                <!--<el-menu-item index="3">
                     <router-link to="/get_money">
                         领红包
                     </router-link>
-                </el-menu-item>
+                </el-menu-item>-->
                 <el-menu-item index="4">
                     <router-link to="/guide">
                         教程
@@ -63,24 +66,71 @@
                     </el-menu-item>
                 </template>
             </el-menu>
-        </div>
-        <!--手机版nav-->
-        <el-row  v-if="windowWidth<=600" class="tac">
-            <el-col :span="24">
-                <el-menu
-                        default-active="1"
-                        class="el-menu-vertical-demo"
-                        background-color="#545c64"
-                        text-color="#fff"
-                        active-text-color="#ffd04b">
-                    <div class="logo-and-name__" style="margin:11px auto">
-                        <i class="float-left logo-and-name__logo">
-                        </i>
-                        <span class="float-left logo-and-name__name"
-                              style="color:white;">
-                                时间规划助手
-                            </span>
-                    </div>
+            <!--手机版nav-->
+            <div v-if="windowWidth<=600"
+                 style="background-color: white;
+                        line-height:0;
+                        position:relative;
+                        z-index:2;"
+                 class="clear"
+                 :class="!dropDownSubmenu?'box_shadow':null"
+            >
+                <div class="logo-and-name__
+                            logo-and-name____small
+                            float-left"
+                     @click="$goRoute('/')"
+                     style="margin: 10px 0 10px 22px;cursor:pointer;"
+                >
+                    <i class="float-left
+                              logo-and-name__logo
+                              logo-and-name__logo__lightbg"
+                    >
+                    </i>
+                    <span class="float-left logo-and-name__name"
+                          style="color:black;">
+                            时间规划助手
+                        </span>
+                </div>
+                <el-button type="text"
+                           @click="dropDownSubmenu?
+                                       dropDownSubmenu=false:
+                                       dropDownSubmenu=true"
+                           style="padding:13px 15px;
+                                  position:absolute;
+                                  right:0;
+                                  top:0;
+                                  "
+                >
+                    <i :class="dropDownSubmenu?
+                                   'el-icon-caret-top':
+                                   'el-icon-caret-bottom'"
+                       style="color:#585858;
+                              font-size:22px;"
+                    ></i>
+                </el-button>
+            </div>
+            <transition enter-active-class="animated fadeIn3Quarter">
+                <div v-show="dropDownSubmenu &&
+                             windowWidth<=600"
+                     @click="dropDownSubmenu=false"
+                     style="position:fixed;
+                            height:100%;
+                            width: 100%;
+                            background-color:#393939;
+                            opacity:.75;
+                            "
+                ></div>
+            </transition>
+            <transition
+                    enter-active-class="animated fadeInDownBig"
+                    leave-active-class="animated fadeOutUpBig"
+            >
+                <el-menu v-show="dropDownSubmenu &&
+                                 windowWidth<=600"
+                         default-active="1"
+                         class="el-menu-vertical-demo "
+                         :class="dropDownSubmenu?'box_shadow':null"
+                         style="position:absolute;width: 100%;">
                     <el-menu-item index="1">
                         <router-link to="/">
                             主页
@@ -127,21 +177,20 @@
                         </el-menu-item>
                     </template>
                 </el-menu>
-            </el-col>
-        </el-row>
+            </transition>
+        </div>
         <div v-if="nav_auto_fill"
+             style="transition:height .4s"
              :style="{height:navHeight+'px'}">
         </div>
         <transition
-                name="custom-classes-transition"
                 :enter-active-class="transitionClass.enter[transitionName]"
                 :leave-active-class="transitionClass.leave[transitionName]"
-
-
         >
             <router-view
                     style="position:absolute;
                            width:100%"
+                    :style="nav_auto_fill?{marginBottom:45+'px'}:null"
             ></router-view>
         </transition>
     </div>
@@ -175,8 +224,11 @@
     ]
 
     const router = new VueRouter({
-        mode: 'history',
-        routes
+        //mode: 'history',
+        routes,
+        scrollBehavior (to, from, savedPosition) {
+            return { x: 0, y: 0 }
+        }
     })
 
 
@@ -201,7 +253,8 @@
                         goRight:'animated fadeOutRight',
                         fade:'animated fadeOut'
                     }
-                }
+                },
+                dropDownSubmenu:false
             }
         },
         computed:{
@@ -236,6 +289,7 @@
                 if(path==='/'){
                     wrapThis.should_navbg_transparent=true
                     wrapThis.nav_auto_fill=false
+                    //进入主页时“滚动滚动条的”附带的函数
                     $(window).scroll(function(){
                         wrapThis.IfTouchLimitScroll(111)?
                             wrapThis.should_navbg_transparent=false:
@@ -243,10 +297,19 @@
                     });
                 }
                 else {
-                    //【BUG】主页下拉后切换到登录，下面这行不会执行（有进入这个else分支）
+                    //进入其它页面时取消掉“滚动滚动条的”附带的函数
+                    $(window).unbind('scroll')
                     wrapThis.should_navbg_transparent=false
                     wrapThis.nav_auto_fill=true
                 }
+                //跳到任何页面都要收起下拉nav
+                wrapThis.dropDownSubmenu=false
+                /*
+
+                //跳到任何页面都重新计算导航条填充
+                setTimeout(function () {
+                    wrapThis.navHeight=$('#nav').height()
+                },1000)*/
             },
             '$route' (to, from) {
                 const toIndex = to.meta.pageIndex
@@ -260,7 +323,14 @@
                         return 'fade'
                 })()
             }
-        },
+        },/*
+        directives: {
+            focus: {
+                inserted: function (el) {
+                    el.focus()
+                }
+            }
+        },*/
         mounted(){
             const wrapThis=this
             this.GetOriginalState()
@@ -284,6 +354,7 @@
                     }
                 );
             }
+            //访问网站，还未使用路由跳转时需要下面这个循环
             //用每秒循环做一个假的“按滚动条高度决定nav样式”
             //跳转路由后取消掉这个循环，做真正的上面这个效果
             wrapThis.first_loop_about_nav=setInterval(function () {
@@ -297,12 +368,21 @@
             window.onresize = () => {
                 return (() => {
                     //更新data子项————windowWidth
-                    window.screenWidth = document.body.clientWidth
-                    wrapThis.windowWidth = window.screenWidth
+                    //window.screenWidth = document.body.clientWidth
+                    wrapThis.windowWidth = window.innerWidth
                     //修改代替nav高度的div的高度
                     wrapThis.navHeight=$('#nav').height()
+                    setTimeout(function () {
+                        wrapThis.navHeight=$('#nav').height()
+                    },500)
                 })()
             }
+			
+			//用控制台打广告
+			console.log('备用空间速度较慢，请大家谅解')
+			console.log('欢迎大家加入讨论群（697705641），目前还没什么人，任何相关话题都欢迎加群讨论')
+			console.log('微信群也可以加入，入群二维码在首页底部')
+			
         }
     }
 

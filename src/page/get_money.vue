@@ -1,9 +1,8 @@
 <template>
     <div>
         <div class="fast-build-page">
-            <div class="jianju" style="height:75px"></div>
             <p class="h1"
-               style="text-indent: 69px;text-align: center;margin:0 auto;">
+               style="text-align: center;margin:0 auto;">
                 红包活动详情
             </p>
             <div class="jianju" style="height:14px"></div>

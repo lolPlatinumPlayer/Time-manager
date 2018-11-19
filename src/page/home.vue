@@ -1,10 +1,14 @@
 <template>
     <div>
-        <el-carousel trigger="click" style="height:777px">
+        <el-carousel trigger="click"
+                     class="home-banner__height">
             <el-carousel-item v-for="item in 4"
                               :key="item"
-                              style="height:777px">
-                <div class="home-banner home-banner-1">
+                              class="home-banner__height"
+            >
+                <div class="home-banner__1
+                            home-banner
+                            home-banner__height">
                 </div>
             </el-carousel-item>
         </el-carousel>
@@ -73,7 +77,7 @@
             <p class="h1">
                 推荐您使用本站
             </p>
-            <i class="el-icon-arrow-down"
+            <i class="el-icon-arrow-down home-part2__3-arrow"
                style="margin-top:37px;font-size:33px;"></i>
         </div>
         <div class="home-part3__">
@@ -186,7 +190,7 @@
                     </div>
                 </div>
                 <div class="home-footer__1-item float-left"
-                     style="width:327px;">
+                     style="width:312px;">
                     <p class="home-footer__1-title">
                         友情链接
                     </p>
@@ -199,7 +203,7 @@
                     </p>
                 </div>
                 <div class="clear"></div>
-                <p style="text-align:center;margin-top:56px;">
+                <p style="text-align:center;margin-top:56px;padding:0 47px;">
                     本站所有图像设计、视频、代码等均为站长所有，若未经站长同意盗用本站内容，一经发现将追究相关责任。
                 </p>
             </div>
@@ -303,6 +307,11 @@
                     }
                 ]
             }
+        },
+        methods:{
+            ...mapActions([
+                'AddDragBar'
+            ])
         }
     }
 </script>

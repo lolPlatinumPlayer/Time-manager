@@ -45,6 +45,7 @@
                     <td>开始时间</td>
                     <td v-for="(a,index) in dragBarP1"
                         :key="index"
+                        style="white-space:nowrap;padding:0 .7em;"
                         :class="a.status==='进行中'||
                         a.status==='延迟完成'?'td_ongoing':null">
                         {{a.trackingDayBegin_clockTime}}
@@ -84,7 +85,8 @@
                         :key="index"
                         :class="a.status==='进行中'||
                         a.status==='延迟完成'?'td_ongoing':null" >
-                        <el-button-group style="width:136px;">
+                        <el-button-group style="width:136px;"
+                                         v-if="a.timeSlotId!='突发事件暂停'">
                             <el-button plain
                                        type="info"
                                        class="control-button"
